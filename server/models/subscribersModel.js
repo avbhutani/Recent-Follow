@@ -14,7 +14,8 @@ const subscribersSchema = new mongoose.Schema({
         }
     },
     subscriptionPurchase: {
-        type:Date
+        type:Date,
+        required:true
     },
     subscriptionExpiry: {
         type:Date,

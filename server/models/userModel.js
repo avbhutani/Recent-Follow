@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
             message: props => `${props.value} is not a valid email!`
         }
     },
+    
     subscriptionStatus: {
         type:String,
         enum:['active','inactive'],
@@ -29,7 +30,8 @@ const userSchema = new mongoose.Schema({
         }
     },
     subscriptionPurchase: {
-        type:Date
+        type:Date,
+        required:true
     },
 
     // can be used to target the users, with high renewal rate.
