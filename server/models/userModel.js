@@ -1,52 +1,57 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    email: {
-        type:String,
-        required:true,
-        unique:true,
+    emailId: {
+        type: String,
+        required: true,
+        unique: true,
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 // Regular expression to validate email format
                 return /\S+@\S+\.\S+/.test(v);
             },
-            message: props => `${props.value} is not a valid email!`
+            message: (props) => `${props.value} is not a valid email!`
         }
     },
-    
     subscriptionStatus: {
-        type:String,
-        enum:['active','inactive'],
-        default:'inactive'
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'inactive'
     },
     subscriptionExpiry: {
-        type:Date,
-        validate: {
-            validator: function(v) {
-                // Ensure that subscriptionExpiry is after subscriptionPurchase
-                return v > this.subscriptionPurchase;
-            },
-            message: props => 'Subscription expiry must be after the purchase date!'
-        }
+        type: Date,
+        validate: [
+            {
+                validator: function (v) {
+                    // Only validate if subscriptionStatus is 'active'
+                    return this.subscriptionStatus === 'inactive' || (v && v > this.subscriptionPurchase);
+                },
+                message: 'Subscription expiry must be after the purchase date!'
+            }
+        ]
     },
     subscriptionPurchase: {
-        type:Date,
-        required:true
+        type: Date,
+        validate: [
+            {
+                validator: function (v) {
+                    // Only validate if subscriptionStatus is 'active'
+                    return this.subscriptionStatus === 'inactive' || !!v;
+                },
+                message: 'Subscription purchase date is required when the subscription is active!'
+            }
+        ]
     },
-
-    // can be used to target the users, with high renewal rate.
-    subscriptionFrequency: 
-    {
-        type:Number,
-        default:0,
+    subscriptionFrequency: {
+        type: Number,
+        default: 0,
         min: [0, 'Subscription frequency cannot be negative']
     }
-},{timestamps:true})
+}, { timestamps: true });
 
-// indexing to make the retrival of the data faster.
-userSchema.index({subscriptionStatus:1})
+// Indexing to make the retrieval of the data faster.
+userSchema.index({ subscriptionStatus: 1 });
 
-const userModel = mongoose.model('user',userSchema)
-
+const userModel = mongoose.model('user', userSchema);
 
 module.exports = userModel;

@@ -1,10 +1,12 @@
+// Update the link when in production.
+
 const jwt = require('jsonwebtoken')
 const nodemailer = require("nodemailer");
 const moment = require('moment')
 require('dotenv').config()
 const lastTokenGeneration = {};
 
-// Checks if the user has already generated the token less than 5 minutes ago, then it would not allow the user to generate the token again for next 5 minutes.
+// Function to Check if the user has already generated the token less than 5 minutes ago, then it would not allow the user to generate the token again for next 5 minutes.
 async function tokenGenerationAccess(emailId) {
     const currentTime = moment();
     
