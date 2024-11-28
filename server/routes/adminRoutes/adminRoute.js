@@ -6,5 +6,4 @@ const adminRoute = express()
 adminRoute.post('/admin/add/subscriber',addSubscriberController)
 
 
-
 module.exports = adminRoute;

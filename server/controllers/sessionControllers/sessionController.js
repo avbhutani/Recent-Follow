@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../../models/userModel');
 const subscribersModel = require('../../models/subscribersModel')
-
+const moment = require('moment')
 require('dotenv').config();
 
 
@@ -39,6 +39,15 @@ async function sessionController(req, res) {
         }
 
         else {
+            subscriptionPurchase = getSubscriptionDetails.subscriptionPurchase
+            subscriptionExpiry = getSubscriptionDetails.subscriptionExpiry
+            console.log(subscriptionExpiry)
+            console.log(subscriptionPurchase)
+            const purchaseDate = moment(subscriptionPurchase, 'DD-MM-YYYY').toDate();  
+            const expiryDate = moment(subscriptionExpiry, 'DD-MM-YYYY').toDate();
+            subscriptionPurchase = purchaseDate
+            subscriptionStatus = 'active'
+            subscriptionExpiry = expiryDate
             console.log(getSubscriptionDetails)
         }
         // Find the user with the emailId
