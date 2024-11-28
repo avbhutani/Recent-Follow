@@ -27,20 +27,21 @@ async function sessionController(req, res) {
                 message: 'Invalid token: emailId missing!'
             });
         }
+        
 
-        let subscriptionStatus = 'inactive'
-        let subscriptionPurchase = 'NA'
-        let subscriptionExpiry = 'NA'
+        // Checks if the user is a subscribed user, and if yes,
+        // then adds the purchase and expiry date into the JWT.
         
         const getSubscriptionDetails = await subscribersModel.findOne({emailId})
+        const subscriptionPurchase = getSubscriptionDetails.subscriptionPurchase || 'NA'
+        const subscriptionStatus = getSubscriptionDetails.subscriptionStatus || 'inactive'
+        const subscriptionExpiry = getSubscriptionDetails.subscriptionExpiry || 'NA'
         if(!getSubscriptionDetails)
         {
             console.log('User Not Subscribed')
         }
 
         else {
-            subscriptionPurchase = getSubscriptionDetails.subscriptionPurchase
-            subscriptionExpiry = getSubscriptionDetails.subscriptionExpiry
             console.log(subscriptionExpiry)
             console.log(subscriptionPurchase)
             const purchaseDate = moment(subscriptionPurchase, 'DD-MM-YYYY').toDate();  
