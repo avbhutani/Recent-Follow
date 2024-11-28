@@ -5,8 +5,8 @@ async function followersController(req,res) {
     // const username = req.params.username
     // console.log(username)
     // Write the tests to check 
-
-
+    
+    
     
     // If all the tests pass and now the user can fetch the data.
     const username = req.params.username;

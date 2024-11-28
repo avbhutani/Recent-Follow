@@ -1,11 +1,14 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../../models/userModel');
+const subscribersModel = require('../../models/subscribersModel')
+
 require('dotenv').config();
 
 
 // Function will be Logging in the user.
 async function sessionController(req, res) {
     const token = req.query.token;
+    const date = new Date()
 
     // If there's no token, send error response
     if (!token) {
@@ -18,7 +21,6 @@ async function sessionController(req, res) {
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_KEY);
         const emailId = decodedToken.emailId;
-
         if (!emailId) {
             return res.status(400).send({
                 success: 'false',
@@ -26,6 +28,19 @@ async function sessionController(req, res) {
             });
         }
 
+        let subscriptionStatus = 'inactive'
+        let subscriptionPurchase = 'NA'
+        let subscriptionExpiry = 'NA'
+        
+        const getSubscriptionDetails = await subscribersModel.findOne({emailId})
+        if(!getSubscriptionDetails)
+        {
+            console.log('User Not Subscribed')
+        }
+
+        else {
+            console.log(getSubscriptionDetails)
+        }
         // Find the user with the emailId
         let user = await userModel.findOne({ emailId });
 
@@ -36,7 +51,11 @@ async function sessionController(req, res) {
         }
 
         // Generate the session token
-        const payload = { emailId };
+        const payload = { emailId, 
+            subscriptionStatus,
+            subscriptionPurchase,
+            subscriptionExpiry
+        };
         const sessionToken = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '7d' });
 
         // Set the expiration date for the cookie (7 days)

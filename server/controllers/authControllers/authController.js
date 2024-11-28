@@ -23,7 +23,7 @@ async function tokenGenerationAccess(emailId) {
 }
 
 // Function sends the authentication token to the client's email for login
-async function sendAuthenticationToken(token) {
+async function sendAuthenticationToken(token,emailId) {
     // One time verification link that will be sent over to the user.
     const verificationLink = `http://localhost:4000/verify?token=${token}`
 
@@ -40,7 +40,7 @@ async function sendAuthenticationToken(token) {
 
     const receiver = {
         from : "ab.anubhav19@gmail.com",
-        to : "avbhutani3@gmail.com",
+        to : emailId,
         subject : `Login Details for Recent Follow Account`,
         text : `Kindly find attached the login details for your recent follow account here.${verificationLink}
         `
@@ -73,7 +73,7 @@ async function authController(req,res) {
 
     try {
         const token = jwt.sign(payload,process.env.JWT_KEY,{expiresIn:'10m'})
-        const response = sendAuthenticationToken(token)
+        const response = sendAuthenticationToken(token,emailId)
         res.status(200).send({
             success:'true',
             message:'Click the link in the email to log in instantly.'

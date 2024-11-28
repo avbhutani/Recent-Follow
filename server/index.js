@@ -6,6 +6,7 @@ const authRoute = require('./routes/authRoutes/authRoute')
 const followRoute = require('./routes/followRoutes/followRoute')
 const axios = require('axios')
 const { createSearchIndex } = require('./models/userModel')
+const adminRoute = require('./routes/adminRoutes/adminRoute')
 require('dotenv').config()
 require('./db/mongodb')
 app.use(cors())
@@ -13,6 +14,7 @@ app.use(bodyParser.json())
 
 app.use(authRoute)
 app.use(followRoute)
+app.use(adminRoute)
 
 app.get('/',(req,res)=> {
     res.send({message: 'ok'})
