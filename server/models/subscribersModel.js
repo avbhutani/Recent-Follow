@@ -1,7 +1,7 @@
 const mongoose = require('mongoose') 
 
 const subscribersSchema = new mongoose.Schema({
-    email: {
+    emailId: {
         type:String,
         required:true,
         unique:true,
