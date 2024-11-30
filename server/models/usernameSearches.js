@@ -7,10 +7,10 @@ const usernameSearchesSchema = new mongoose.Schema({
     },
     searchCount: {
         type:Number,
-        default:0
+        default:1
     }
 })
 
 
-const usernameSearches = mongoose.model('usernameSearches',usernameSearchesSchema)
-module.exports = usernameSearches
+const usernameSearchesModel = mongoose.model('usernameSearches',usernameSearchesSchema)
+module.exports = usernameSearchesModel
