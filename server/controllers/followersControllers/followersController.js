@@ -1,16 +1,36 @@
-const axios = require('axios')
+const axios = require('axios');
+const usernameSearches = require('../usernameSearchesControllers/usernameSearches');
+const checkSubscribedUser = require('../../utility/checkSubscribedUser');
 require('dotenv').config()
 
 async function followersController(req,res) {
     // const username = req.params.username
     // console.log(username)
     // Write the tests to check 
-    
-    
+    const token = req.headers.authtoken
+    console.log(token)
+    const subscribedUser = await checkSubscribedUser(token)
+    console.log('Check herre the value')
+    console.log(subscribedUser)
     
     // If all the tests pass and now the user can fetch the data.
+    
     const username = req.params.username;
     console.log('Username:', username);
+
+    // Checks if the username search quota is remaining or not.
+    const usernameSearchQuota = await usernameSearches(username)
+    if(!subscribedUser && !usernameSearchQuota) {
+        console.log('Quota finished!')
+        return res.status(500).send(
+            {
+                success:'false',
+                message:'Username Limit is reached!'
+            }
+        )
+    }
+    // Checks if the username search quota is remaining or not.
+
 
     try {
         const apiKey = process.env.INSTA_SCRAPPER_API;
