@@ -5,29 +5,7 @@ const followingController = require('../../controllers/followingControllers/foll
 const followRoute = express()
 
 
-followRoute.get('/api/fetch/followers/:username',(req,res,next) => {
-    const token = req.headers.authtoken 
-    if(!token) {
-        res.status(400).send(
-            {
-                success:'false',
-                message:'Kindly Login!'
-            }
-        )
-    }
-    next()
-},followersController)
-followRoute.get('/api/fetch/following/:username',(req,res,next) => {
-    const token = req.headers.authtoken 
-    if(!token) {
-        res.status(400).send(
-            {
-                success:'false',
-                message:'Kindly Login!'
-            }
-        )
-    }
-    next()
-},followingController)
+followRoute.get('/api/fetch/followers/:username',followersController)
+followRoute.get('/api/fetch/following/:username',followingController)
 
 module.exports = followRoute

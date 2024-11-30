@@ -6,7 +6,9 @@ require('dotenv').config()
 async function followingController(req,res) {
     const token = req.headers.authtoken
     console.log(token)
-    const subscribedUser = await checkSubscribedUser(token)
+    let subscribedUser = undefined
+    if(token)    
+    { subscribedUser = await checkSubscribedUser(token)}
     console.log('Check herre the value')
     console.log(subscribedUser)
     
@@ -17,7 +19,7 @@ async function followingController(req,res) {
 
     // Checks if the username search quota is remaining or not.
     const usernameSearchQuota = await usernameSearches(username)
-    if(!subscribedUser && !usernameSearchQuota) {
+    if((!token && !usernameSearchQuota) || (!subscribedUser && !usernameSearchQuota)) {
         console.log('Quota finished!')
         return res.status(500).send(
             {
