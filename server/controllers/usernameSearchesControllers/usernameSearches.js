@@ -2,7 +2,7 @@ const usernameSearchesModel = require('../../models/usernameSearches')
 
 async function usernameSearches(req, res) {
     try {
-        const username = req.body.username; // Expecting username to be passed in the request body
+        const username = req.params.username; // Expecting username to be passed in the request body
         
         if (!username) {
             return res.status(400).send({
@@ -13,7 +13,7 @@ async function usernameSearches(req, res) {
 
         // Find the username entry in the database
         const userSearch = await usernameSearchesModel.findOne({ username });
-        if(userSearch.searchCount >= 3) {
+        if(userSearch && userSearch.searchCount >= 3) {
             return res.status(400).send(
                 {
                     success:'false',
