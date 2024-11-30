@@ -13,25 +13,34 @@ const subscribersSchema = new mongoose.Schema({
             message: props => `${props.value} is not a valid email!`
         }
     },
-    subscriptionPurchase: {
-        type:Date,
-        required:true
+    subscriptionStatus: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'inactive'
     },
     subscriptionExpiry: {
-        type:Date,
-        required: true,
-        validate: {
-            validator: function(v) {
-                // Ensure that the subscription expiry is after the purchase date
-                return v > this.subscriptionPurchase;
-            },
-            message: props => `Subscription expiry must be after the purchase date!`
-        }
+        type: Date,
+        validate: [
+            {
+                validator: function (v) {
+                    // Only validate if subscriptionStatus is 'active'
+                    return this.subscriptionStatus === 'inactive' || (v && v > this.subscriptionPurchase);
+                },
+                message: 'Subscription expiry must be after the purchase date!'
+            }
+        ]
     },
-    subscriptionStatus: {
-        type:String,
-        enum:['active','inactive'],
-        default:'active'
+    subscriptionPurchase: {
+        type: Date,
+        validate: [
+            {
+                validator: function (v) {
+                    // Only validate if subscriptionStatus is 'active'
+                    return this.subscriptionStatus === 'inactive' || !!v;
+                },
+                message: 'Subscription purchase date is required when the subscription is active!'
+            }
+        ]
     },
     // Max number of API requests allowed.
     requestMaxCount: {

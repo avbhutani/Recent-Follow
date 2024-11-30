@@ -3,8 +3,7 @@ require('dotenv').config()
 
 async function followingController(req,res) {
     const username = req.params.username
-
-
+    
     // If every other check passes, then just fetch the response from the API.
     try {
         const apiKey = process.env.INSTA_SCRAPPER_API;

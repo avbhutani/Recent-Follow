@@ -31,11 +31,19 @@ async function sessionController(req, res) {
 
         // Checks if the user is a subscribed user, and if yes,
         // then adds the purchase and expiry date into the JWT.
-        
+
         const getSubscriptionDetails = await subscribersModel.findOne({emailId})
-        const subscriptionPurchase = getSubscriptionDetails.subscriptionPurchase || 'NA'
-        const subscriptionStatus = getSubscriptionDetails.subscriptionStatus || 'inactive'
-        const subscriptionExpiry = getSubscriptionDetails.subscriptionExpiry || 'NA'
+        let subscriptionStatus = 'inactive'
+        let subscriptionPurchase = undefined
+        let subscriptionExpiry = undefined
+        if(getSubscriptionDetails) {
+            subscriptionPurchase = getSubscriptionDetails.subscriptionPurchase
+            subscriptionExpiry = getSubscriptionDetails.subscriptionExpiry 
+        }
+        
+        console.log(subscriptionPurchase)
+        console.log(subscriptionStatus)
+        console.log(subscriptionStatus)
         if(!getSubscriptionDetails)
         {
             console.log('User Not Subscribed')
@@ -44,10 +52,11 @@ async function sessionController(req, res) {
         else {
             console.log(subscriptionExpiry)
             console.log(subscriptionPurchase)
+            
+            subscriptionStatus = 'active'
             const purchaseDate = moment(subscriptionPurchase, 'DD-MM-YYYY').toDate();  
             const expiryDate = moment(subscriptionExpiry, 'DD-MM-YYYY').toDate();
             subscriptionPurchase = purchaseDate
-            subscriptionStatus = 'active'
             subscriptionExpiry = expiryDate
             console.log(getSubscriptionDetails)
         }
@@ -61,7 +70,8 @@ async function sessionController(req, res) {
         }
 
         // Generate the session token
-        const payload = { emailId, 
+        const payload = { 
+            emailId, 
             subscriptionStatus,
             subscriptionPurchase,
             subscriptionExpiry
